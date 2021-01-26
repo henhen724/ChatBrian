@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<head>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+</head>
+
+<body>
+    <div>
+    </div>
+    <script>
+        const context = new AudioContext();
+        const socket = io();
+        socket.on("connect", () => {
+            // console.log("Connected to server.");
+            socket.on("broadcast", (data) => {
+                console.log("Broadcast recieved.")
+                console.log(data);
+                context.decodeAudioData(data.AudioStream).then(audioBuffer => {
+                    // console.log("playing decoded buffer.")
+                    const source = context.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(context.destination);
+                    source.start(0);
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>
